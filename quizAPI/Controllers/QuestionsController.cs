@@ -20,16 +20,13 @@ namespace quizAPI.Controllers
         public IEnumerable<Models.Question> Get()
         {
 
-            return new Models.Question[]
-            {
-                new Models.Question(){Text="test"},
-                new Models.Question(){Text="test2"},
-            };
+            return context.Questions;
         }
         [HttpPost]
         public void Post([FromBody]Models.Question question)
         {
-            context.Questions.Add(new Models.Question() { Text="test Context"});
+            context.Questions.Add(question);
+            context.SaveChanges();
         }
     }
 }
