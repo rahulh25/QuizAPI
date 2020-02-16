@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace quizAPI.Controllers
 {
@@ -23,10 +24,20 @@ namespace quizAPI.Controllers
             return context.Questions;
         }
         [HttpPost]
-        public void Post([FromBody]Models.Question question)
+        public async Task<IActionResult> Post([FromBody]Models.Question question)
         {
             context.Questions.Add(question);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
+            return Ok(question);
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody]Models.Question question)
+        {
+            if (id != question.ID)
+                return BadRequest();
+            context.Entry(question).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+            return Ok(question);
         }
     }
 }
